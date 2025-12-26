@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Present Tense Quiz</title>
+
+<!-- MathJax (kept for compatibility) -->
+<script>
+window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+body{margin:0;font-family:Arial;background:#f4f6fa}
+header{
+position:fixed;top:0;left:0;right:0;
+background:#1e88e5;color:#fff;
+padding:10px;text-align:center;
+z-index:10
+}
+#timerText{float:left}
+#toggleNav{float:right;background:#fff;color:#1e88e5;border:none;padding:5px 10px;border-radius:6px}
+
+#container{padding:70px 10px 20px}
+#resultContainer{padding:10px 10px 160px}
+
+.option{
+display:block;padding:10px;border:1px solid #ccc;
+border-radius:8px;margin:8px 0
+}
+.correct{background:#c8f7c5;border-color:green}
+.wrong{background:#f7c5c5;border-color:red}
+
+.bottom-bar{
+position:fixed;bottom:0;left:0;right:0;
+display:flex;justify-content:space-between;
+padding:10px;background:#fff;border-top:1px solid #ccc
+}
+button{padding:10px 15px;border:none;border-radius:6px}
+#prev{background:#ccc}
+#next{background:#1e88e5;color:#fff}
+#submit{background:green;color:#fff;display:none}
+
+#navPanel{
+position:fixed;top:60px;right:-250px;width:220px;
+background:#fff;border-left:2px solid #1e88e5;
+height:100%;padding:10px;transition:0.3s
+}
+.nav-btn{
+width:40px;height:40px;margin:5px;border:none;border-radius:50%
+}
+.attempted{background:green;color:#fff}
+.viewed{background:red;color:#fff}
+
+.watermark{
+position:fixed;opacity:0.15;font-size:22px;
+transform:rotate(-30deg);color:#000;
+pointer-events:none
+}
+
+#loginBox{text-align:center;padding:40px}
+#errorMsg{color:red;margin-top:10px;font-size:14px;display:none}
+
+#resultBox{
+background:#fff;border-radius:10px;
+border:2px solid #1e88e5;padding:15px
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginBox">
+<h2>Enter Mobile Number</h2>
+<input id="mobileInput" type="tel" placeholder="Mobile Number"><br><br>
+<button onclick="login()">Start Quiz</button>
+<div id="errorMsg">Invalid mobile number</div>
+</div>
+
+<header id="quizHeader" style="display:none">
+<span id="timerText"></span>
+Present Tense Quiz
+<button id="toggleNav">☰</button>
+</header>
+
+<div id="container"></div>
+<div id="resultContainer"></div>
+
+<div class="bottom-bar" id="bottomBar" style="display:none">
+<button id="prev">Prev</button>
+<button id="next">Next</button>
+<button id="submit">Submit</button>
+</div>
+
+<div id="navPanel"></div>
+
+<div class="watermark" style="top:40%;left:20%" id="wm1"></div>
+<div class="watermark" style="top:60%;left:50%" id="wm2"></div>
+
+<script>
+const allowedMobiles=["9876543210"];
+let mobile="";
+
+const questions=[
+{q:"He ___ to school every day.",o:["go","goes","going","gone"],a:1},
+{q:"She ___ coffee in the morning.",o:["drink","drinks","drank","drinking"],a:1},
+{q:"They ___ cricket on Sundays.",o:["play","plays","played","playing"],a:0},
+{q:"The sun ___ in the east.",o:["rise","rises","rose","rising"],a:1},
+{q:"I ___ my homework daily.",o:["do","does","did","doing"],a:0},
+{q:"She ___ English very well.",o:["speak","speaks","spoke","speaking"],a:1},
+{q:"We ___ to the temple every week.",o:["go","goes","went","going"],a:0},
+{q:"He ___ TV in the evening.",o:["watch","watches","watched","watching"],a:1},
+{q:"Birds ___ in the sky.",o:["fly","flies","flew","flying"],a:0},
+{q:"The baby ___ loudly.",o:["cry","cries","cried","crying"],a:1},
+{q:"Distance between points (a sin60⁰,0) and (0, a cos30⁰) is",o:["	$ - \sqrt{\frac{3}{2}} a$","	$ \sqrt{\frac{3}{2}} a$","	$ \sqrt{\frac{3}{2}} | a |$","	$  \sqrt{\frac{2}{3}} | a | $"],a:2},
+If $ \frac{\pi}{2} < \alpha < \pi $ , then the distance between the points ($tan \alpha,2$) , (0,1) is	cosec $\alpha$	-cosec $\alpha$	sec $\alpha$	- sec $\alpha$
+If distance between the points (a cos48⁰,0) and (0,a cos12⁰) is d, then d² - a² = 	$ \frac {a^2 \left( \sqrt{5} - 1 \right)} {4} $	$ \frac {a^2 \left( \sqrt{5} + 1 \right)} {4} $	$ \frac {a^2 \left( \sqrt{5} - 1 \right)} {8} $	$ \frac {a^2 \left( \sqrt{5} + 1 \right)} {8} $
+If A =(t² , 2t) , B = ($\frac{1}{t^2}, - \frac{2}{t} $) , S = (1,0) then $ \frac{1}{SA} + \frac{1}{SB}$ =	1	2	3	4
+The nearest point from the origin is 	(2, -3) 	(5, 0)	(2 , -1)	(1, 3)
+The abscissa of points whose ordinate is 4 and which are at a distance of 5 units from (5,0)	2,6	6,4	2,8	4,8
+A(2,3) , B(x,y) and if C(3,4) divides AB in the ratio 1:5 internally then B = 	(8,9)	(8,-9)	(-8,9)	(-8,-9)
+The coordinates of the point that is two-thirds away from (-4,3) to (5,7) is	($ \frac{17}{3}, 3 $ )	($ 2, \frac{17}{3} $)	($ 2, \frac{3}{17} $)	($ 3, \frac{2}{17} $)
+If A =(-2,5) , B = (3,1) and P, Q are the points of trisection of $ \overline{AB} $ , then mid point of $ \overline{PQ} $	(2,3)	(1/2,3)	(-1/2,5)	(1,4)
+The points A, B, P may or may not be collinear if 	PA : PB = 1 : 3	P is the mid-point of $\overline{AB}$	P is the point of trisection of $\overline{AB}$	P divides $\overline{AB}$
+{q:"She ___ a song now. (present continuous)",o:["sing","sings","is singing","sang"],a:2},
+{q:"They ___ dinner at present.",o:["eat","eats","are eating","ate"],a:2},
+{q:"I ___ a book now.",o:["read","reads","am reading","reading"],a:2},
+{q:"He ___ a letter at the moment.",o:["write","writes","is writing","wrote"],a:2},
+{q:"We ___ for the bus now.",o:["wait","waits","are waiting","waited"],a:2},
+
+{q:"She usually ___ early.",o:["wake","wakes","woke","waking"],a:1},
+{q:"Water ___ at 100°C.",o:["boil","boils","boiled","boiling"],a:1},
+{q:"The teacher ___ the lesson clearly.",o:["explain","explains","explained","explaining"],a:1},
+{q:"I never ___ late.",o:["come","comes","came","coming"],a:0},
+{q:"He often ___ mistakes.",o:["make","makes","made","making"],a:1},
+
+{q:"Look! It ___ heavily.",o:["rain","rains","is raining","rained"],a:2},
+{q:"She ___ a phone call now.",o:["receive","receives","is receiving","received"],a:2},
+{q:"They ___ football at present.",o:["play","plays","are playing","played"],a:2},
+{q:"I ___ English grammar these days.",o:["learn","learns","am learning","learned"],a:2}
+];
+
+let index=0,answers=[],viewed=[],submitted=false;
+let timeLeft=questions.length*60;
+let timerInterval;
+
+function login(){
+mobile=mobileInput.value.trim();
+if(!allowedMobiles.includes(mobile)){
+errorMsg.style.display="block";
+return;
+}
+errorMsg.style.display="none";
+loginBox.style.display="none";
+quizHeader.style.display="block";
+bottomBar.style.display="flex";
+wm1.innerText=mobile;
+wm2.innerText=mobile;
+loadQuestion();
+startTimer();
+}
+
+function startTimer(){
+timerInterval=setInterval(updateTimer,1000);
+}
+
+function updateTimer(){
+let m=Math.floor(timeLeft/60);
+let s=timeLeft%60;
+timerText.innerText=`Time: ${m}:${s<10?'0'+s:s}`;
+if(timeLeft--<=0 && !submitted)submitQuiz();
+}
+
+function loadQuestion(){
+viewed[index]=true;
+let q=questions[index];
+container.innerHTML=`
+<h4>Mobile: ${mobile}</h4>
+<h3>Q${index+1}. ${q.q}</h3>
+${q.o.map((opt,i)=>`
+<label class="option
+${submitted&&i===q.a?'correct':''}
+${submitted&&answers[index]===i&&i!==q.a?'wrong':''}">
+<input type="radio" name="opt"
+${submitted?"disabled":""}
+${answers[index]===i?"checked":""}
+onclick="answers[${index}]=${i};updateNav()">
+${opt}
+</label>`).join("")}
+`;
+submit.style.display=(index===questions.length-1&&!submitted)?"block":"none";
+updateNav();
+}
+
+function updateNav(){
+navPanel.innerHTML="";
+questions.forEach((_,i)=>{
+let cls="";
+if(answers[i]!=null)cls="attempted";
+else if(viewed[i])cls="viewed";
+navPanel.innerHTML+=`<button class="nav-btn ${cls}" onclick="index=${i};loadQuestion()">${i+1}</button>`;
+});
+}
+
+toggleNav.onclick=()=>navPanel.style.right=navPanel.style.right=="0px"?"-250px":"0px";
+prev.onclick=()=>{if(index>0){index--;loadQuestion();}};
+next.onclick=()=>{if(index<questions.length-1){index++;loadQuestion();}};
+submit.onclick=submitQuiz;
+
+function submitQuiz(){
+if(submitted)return;
+submitted=true;
+clearInterval(timerInterval);
+
+let score=0;
+questions.forEach((q,i)=>{if(answers[i]===q.a)score++;});
+
+resultContainer.innerHTML=`
+<div id="resultBox">
+<h3>Result</h3>
+<p><b>Mobile Number :</b> ${mobile}</p>
+<p><b>Marks :</b> ${score} / ${questions.length}</p>
+</div>
+`;
+
+sendToGoogleForm(score);
+loadQuestion();
+}
+
+function sendToGoogleForm(score){
+let url="https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse";
+let data=new FormData();
+data.append("entry.MOBILE_ENTRY_ID",mobile);
+data.append("entry.MARKS_ENTRY_ID",score);
+fetch(url,{method:"POST",mode:"no-cors",body:data});
+}
+</script>
+
+</body>
+</html>
