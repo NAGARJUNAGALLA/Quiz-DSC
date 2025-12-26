@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>9th Biology Quiz - Cell</title>
+
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6fa; color: #333; }
+        header {
+            position: fixed; top: 0; left: 0; right: 0;
+            background: #2e7d32; color: #fff;
+            padding: 15px; text-align: center;
+            z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            font-weight: bold;
+        }
+        #timerText { float: left; font-family: monospace; }
+        #toggleNav { float: right; background: #fff; color: #2e7d32; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; }
+
+        #container { padding: 80px 15px 20px; max-width: 600px; margin: auto; }
+        #resultContainer { padding: 10px 15px 160px; max-width: 600px; margin: auto; }
+
+        .question-card { background: #fff; padding: 20px; border-radius: 12px; shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        
+        .option {
+            display: block; padding: 14px; border: 2px solid #eee;
+            border-radius: 10px; margin: 10px 0; background: #fff;
+            cursor: pointer; transition: 0.2s; position: relative;
+        }
+        .option:hover { background: #f0f7ff; border-color: #2e7d32; }
+        input[type="radio"] { margin-right: 12px; transform: scale(1.2); }
+
+        /* Feedback Styles */
+        .correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724; font-weight: bold; }
+        .wrong { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
+
+        .bottom-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            display: flex; justify-content: space-between;
+            padding: 15px; background: #fff; border-top: 1px solid #ddd; z-index: 5;
+        }
+        button { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        #prev { background: #e0e0e0; color: #444; }
+        #next { background: #2e7d32; color: #fff; }
+        #submit { background: #c62828; color: #fff; display: none; }
+
+        #navPanel {
+            position: fixed; top: 60px; right: -260px; width: 240px;
+            background: #fff; border-left: 3px solid #2e7d32;
+            height: calc(100% - 60px); padding: 15px; transition: 0.3s;
+            overflow-y: auto; z-index: 9; box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+        }
+        .nav-btn { width: 45px; height: 45px; margin: 5px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; background: #fff; }
+        .attempted { background: #2e7d32 !important; color: #fff; border-color: #1b5e20; }
+        .viewed { background: #ffebee; color: #c62828; border-color: #ef9a9a; }
+
+        .watermark {
+            position: fixed; opacity: 0.08; font-size: 20px;
+            transform: rotate(-30deg); color: #000;
+            pointer-events: none; white-space: nowrap; z-index: 0; font-weight: bold;
+        }
+
+        #loginBox { text-align: center; padding: 100px 20px; }
+        #mobileInput { padding: 12px; width: 250px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; }
+        #errorMsg { color: #d32f2f; margin-top: 10px; display: none; }
+
+        #resultBox { background: #fff; border-radius: 12px; border: 2px solid #2e7d32; padding: 20px; margin-bottom: 20px; text-align: center; }
+    </style>
+</head>
+
+<body>
+
+<div id="loginBox">
+    <h2>9th Biology Online Quiz</h2>
+    <p>Please enter your registered mobile number to start.</p>
+    <input id="mobileInput" type="tel" placeholder="Mobile Number"><br><br>
+    <button onclick="login()" style="background:#2e7d32;color:#fff;padding:12px 40px; font-size: 16px;">Start Quiz</button>
+    <div id="errorMsg">Unauthorized Number. Please check and try again.</div>
+</div>
+
+<header id="quizHeader" style="display:none">
+    <span id="timerText">00:00</span>
+    కణం - జీవుల మౌలిక ప్రమాణం
+    <button id="toggleNav">☰</button>
+</header>
+
+<div id="container"></div>
+<div id="resultContainer"></div>
+
+<div class="bottom-bar" id="bottomBar" style="display:none">
+    <button id="prev">Previous</button>
+    <button id="submit">Finish Quiz</button>
+    <button id="next">Next</button>
+</div>
+
+<div id="navPanel">
+    <h4 style="margin-top:0">Question Map</h4>
+    <div id="navGrid"></div>
+</div>
+
+<div class="watermark" style="top:20%;left:10%" id="wm1"></div>
+<div class="watermark" style="top:50%;left:50%" id="wm2"></div>
+<div class="watermark" style="top:80%;left:20%" id="wm3"></div>
+
+<script>
+    const allowedMobiles = ["9876543521", "12345678654", "9000000000"]; // Add your numbers here
+    let mobile = "";
+
+    // Questions extracted from your image
+    const questions = [
+        { q: "జీవం యొక్క నిర్మాణాత్మక మరియు క్రియాత్మక ప్రమాణం", o: ["అణువు", "కణజాలం", "కణం", "పైవన్నీ"], a: 2 },
+        { q: "కేంద్రక పూర్వ జీవి కణానికి ఉదాహరణ", o: ["ప్రోటోజోవా", "శిలీంధ్రాలు", "మొక్క కణం", "బ్యాక్టీరియా"], a: 3 },
+        { q: "కణంలోని ఏ భాగం దాని అన్ని కార్యకలాపాలను నియంత్రిస్తుంది?", o: ["కణద్రవ్యం", "కేంద్రకం", "ప్లాస్మా పొర", "మైటోకాండ్రియా"], a: 1 },
+        { q: "మొక్కలలో కిరణజన్య సంయోగ క్రియకు తోడ్పడే కణాంగం", o: ["రైబోజోమ్", "లైసోజోమ్", "క్లోరోప్లాస్ట్", "మైటోకాండ్రియా"], a: 2 },
+        { q: "కణం యొక్క శక్తి కేంద్రం అని పిలువబడే కణాంగం", o: ["గాల్జీ సంక్లిష్టం", "మైటోకాండ్రియా", "రైబోజోమ్", "కేంద్రకం"], a: 1 },
+        { q: "ఎలక్ట్రానిక్ సూక్ష్మ దర్శిని కనుగొన్న సంవత్సరం", o: ["1940", "1840", "1675", "1904"], a: 0 },
+        { q: "సకశేరుకాల కాలేయ కణాలలోని విష పదార్థాలను మందులను నిర్వీర్యం చేసేది", o: ["గరుకు ER", "నునుపు ER", "గాల్జీ సంక్లిష్టం", "రైబోజోమ్"], a: 1 },
+        { q: "హైపోటోనిక్ అనగా", o: ["అల్ప గాఢత గల ద్రావణం", "అధిక గాఢత గల ద్రావణం", "సమ గాఢత గల ద్రావణం", "విషమ గాఢత గల ద్రావణం"], a: 0 },
+        { q: "కణాన్ని పూర్వమున్న కణాల నుండే నిర్మితమవుతాయి అని తెలిపింది", o: ["రుడాల్ఫ్ విర్కో", "రాబర్ట్ కోచ్", "పాశ్చర్", "పైవన్నీ"], a: 0 },
+        { q: "త్వచ జీవసంశ్లేషణలో తోడ్పడే కణాంగం", o: ["గరుకు ER", "నునుపు ER", "రైబోజోమ్", "లైసోజోమ్"], a: 1 },
+        { q: "కణ సిద్ధాంతాన్ని ప్రతిపాదించిన శాస్త్రవేత్తలు ఎవరు?", o: ["ష్లైడన్ & ష్వాన్", "వాట్సన్ & క్రిక్", "మెండల్", "రాబర్ట్ బ్రౌన్"], a: 0 }
+    ];
+
+    let index = 0, answers = [], viewed = [], submitted = false;
+    let timeLeft = questions.length * 60; 
+    let timerInterval;
+
+    function login() {
+        mobile = document.getElementById('mobileInput').value.trim();
+        if (!allowedMobiles.includes(mobile)) {
+            document.getElementById('errorMsg').style.display = "block";
+            return;
+        }
+        document.getElementById('loginBox').style.display = "none";
+        document.getElementById('quizHeader').style.display = "block";
+        document.getElementById('bottomBar').style.display = "flex";
+        
+        document.getElementById('wm1').innerText = mobile;
+        document.getElementById('wm2').innerText = mobile;
+        document.getElementById('wm3').innerText = mobile;
+
+        loadQuestion();
+        startTimer();
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            let m = Math.floor(timeLeft / 60);
+            let s = timeLeft % 60;
+            document.getElementById('timerText').innerText = `${m}:${s < 10 ? '0' + s : s}`;
+            if (timeLeft-- <= 0 && !submitted) submitQuiz();
+        }, 1000);
+    }
+
+    function loadQuestion() {
+        viewed[index] = true;
+        let q = questions[index];
+        let container = document.getElementById('container');
+        
+        container.innerHTML = `
+            <div class="question-card">
+                <p style="color:#666; font-size:0.9rem">ప్రశ్న ${index + 1} / ${questions.length}</p>
+                <h3 style="margin-top:5px">${q.q}</h3>
+                <div id="optionsGroup">
+                    ${q.o.map((opt, i) => `
+                        <label class="option 
+                            ${submitted && i === q.a ? 'correct' : ''} 
+                            ${submitted && answers[index] === i && i !== q.a ? 'wrong' : ''}">
+                            <input type="radio" name="quizOpt" 
+                                ${submitted ? "disabled" : ""} 
+                                ${answers[index] === i ? "checked" : ""} 
+                                onclick="selectOption(${i})">
+                            ${opt}
+                        </label>
+                    `).join("")}
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('submit').style.display = (index === questions.length - 1 && !submitted) ? "block" : "none";
+        document.getElementById('next').style.display = (index === questions.length - 1) ? "none" : "block";
+        updateNav();
+    }
+
+    function selectOption(i) {
+        if (submitted) return;
+        answers[index] = i;
+        updateNav();
+    }
+
+    function updateNav() {
+        let navGrid = document.getElementById('navGrid');
+        navGrid.innerHTML = "";
+        questions.forEach((_, i) => {
+            let cls = "";
+            if (answers[i] != null) cls = "attempted";
+            else if (viewed[i]) cls = "viewed";
+            navGrid.innerHTML += `<button class="nav-btn ${cls}" onclick="goToQuestion(${i})">${i + 1}</button>`;
+        });
+    }
+
+    function goToQuestion(i) {
+        index = i;
+        loadQuestion();
+        document.getElementById('navPanel').style.right = "-260px";
+    }
+
+    document.getElementById('toggleNav').onclick = () => {
+        let panel = document.getElementById('navPanel');
+        panel.style.right = panel.style.right === "0px" ? "-260px" : "0px";
+    };
+
+    document.getElementById('prev').onclick = () => { if (index > 0) { index--; loadQuestion(); } };
+    document.getElementById('next').onclick = () => { if (index < questions.length - 1) { index++; loadQuestion(); } };
+    document.getElementById('submit').onclick = submitQuiz;
+
+    function submitQuiz() {
+        if (submitted) return;
+        if (!confirm("Are you sure you want to finish the quiz?")) return;
+        
+        submitted = true;
+        clearInterval(timerInterval);
+        let score = 0;
+        questions.forEach((q, i) => { if (answers[i] === q.a) score++; });
+
+        document.getElementById('resultContainer').innerHTML = `
+            <div id="resultBox">
+                <h2 style="color:#2e7d32">Quiz Completed!</h2>
+                <p>Mobile: <b>${mobile}</b></p>
+                <h1 style="margin:10px 0">${score} / ${questions.length}</h1>
+                <p>Correct Answers: ${score}</p>
+                <button onclick="location.reload()" style="background:#2e7d32; color:#fff; margin-top:10px">Restart Quiz</button>
+            </div>
+        `;
+        loadQuestion();
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>
