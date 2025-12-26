@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Present Tense Quiz</title>
+<title>Class XI Trigonometric Ratios Quiz</title>
 
-<!-- MathJax (kept for compatibility) -->
 <script>
 window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};
 </script>
@@ -26,18 +25,20 @@ z-index:10
 #resultContainer{padding:10px 10px 160px}
 
 .option{
-display:block;padding:10px;border:1px solid #ccc;
-border-radius:8px;margin:8px 0
+display:block;padding:12px;border:1px solid #ccc;
+border-radius:8px;margin:8px 0;background:#fff;
+cursor:pointer; transition: 0.2s;
 }
-.correct{background:#c8f7c5;border-color:green}
-.wrong{background:#f7c5c5;border-color:red}
+.option:hover{background:#f0f7ff}
+.correct{background:#c8f7c5 !important;border-color:green !important}
+.wrong{background:#f7c5c5 !important;border-color:red !important}
 
 .bottom-bar{
 position:fixed;bottom:0;left:0;right:0;
 display:flex;justify-content:space-between;
-padding:10px;background:#fff;border-top:1px solid #ccc
+padding:10px;background:#fff;border-top:1px solid #ccc;z-index:5;
 }
-button{padding:10px 15px;border:none;border-radius:6px}
+button{padding:10px 15px;border:none;border-radius:6px;cursor:pointer}
 #prev{background:#ccc}
 #next{background:#1e88e5;color:#fff}
 #submit{background:green;color:#fff;display:none}
@@ -45,18 +46,19 @@ button{padding:10px 15px;border:none;border-radius:6px}
 #navPanel{
 position:fixed;top:60px;right:-250px;width:220px;
 background:#fff;border-left:2px solid #1e88e5;
-height:100%;padding:10px;transition:0.3s
+height:calc(100% - 60px);padding:10px;transition:0.3s;
+overflow-y:auto;z-index:9;
 }
 .nav-btn{
-width:40px;height:40px;margin:5px;border:none;border-radius:50%
+width:40px;height:40px;margin:5px;border:none;border-radius:50%;cursor:pointer
 }
 .attempted{background:green;color:#fff}
 .viewed{background:red;color:#fff}
 
 .watermark{
-position:fixed;opacity:0.15;font-size:22px;
+position:fixed;opacity:0.1;font-size:24px;
 transform:rotate(-30deg);color:#000;
-pointer-events:none
+pointer-events:none;white-space:nowrap;z-index:0;
 }
 
 #loginBox{text-align:center;padding:40px}
@@ -71,17 +73,16 @@ border:2px solid #1e88e5;padding:15px
 
 <body>
 
-<!-- LOGIN -->
 <div id="loginBox">
 <h2>Enter Mobile Number</h2>
 <input id="mobileInput" type="tel" placeholder="Mobile Number"><br><br>
-<button onclick="login()">Start Quiz</button>
+<button onclick="login()" style="background:#1e88e5;color:#fff;padding:10px 30px">Start Quiz</button>
 <div id="errorMsg">Invalid mobile number</div>
 </div>
 
 <header id="quizHeader" style="display:none">
 <span id="timerText"></span>
-Present Tense Quiz
+Trigonometry (Class XI)
 <button id="toggleNav">☰</button>
 </header>
 
@@ -96,41 +97,47 @@ Present Tense Quiz
 
 <div id="navPanel"></div>
 
-<div class="watermark" style="top:40%;left:20%" id="wm1"></div>
-<div class="watermark" style="top:60%;left:50%" id="wm2"></div>
-
+<div class="watermark" style="top:30%;left:10%" id="wm1"></div>
+<div class="watermark" style="top:70%;left:40%" id="wm2"></div>
+<div class="watermark" style="top:50%;left:20%" id="wm3"></div>
+<div class="watermark" style="top:40%;left:30%" id="wm4"></div>
 <script>
-const allowedMobiles=["9876543210"];
+// NOTE: Ensure your mobile number is in this list
+const allowedMobiles=["9876543521","12345678654"];
 let mobile="";
 
+// Use HTML Entities for Special Symbols: < is &lt;, > is &gt;, = is &#61;
 const questions=[
-{q:"He ___ to school every day.",o:["go","goes","going","gone"],a:1},
-{q:"She ___ coffee in the morning.",o:["drink","drinks","drank","drinking"],a:1},
-{q:"They ___ cricket on Sundays.",o:["play","plays","played","playing"],a:0},
-{q:"The sun ___ in the east.",o:["rise","rises","rose","rising"],a:1},
-{q:"I ___ my homework daily.",o:["do","does","did","doing"],a:0},
-{q:"She ___ English very well.",o:["speak","speaks","spoke","speaking"],a:1},
-{q:"We ___ to the temple every week.",o:["go","goes","went","going"],a:0},
-{q:"He ___ TV in the evening.",o:["watch","watches","watched","watching"],a:1},
-{q:"Birds ___ in the sky.",o:["fly","flies","flew","flying"],a:0},
-{q:"The baby ___ loudly.",o:["cry","cries","cried","crying"],a:1},
-
-{q:"She ___ a song now. (present continuous)",o:["sing","sings","is singing","sang"],a:2},
-{q:"They ___ dinner at present.",o:["eat","eats","are eating","ate"],a:2},
-{q:"I ___ a book now.",o:["read","reads","am reading","reading"],a:2},
-{q:"He ___ a letter at the moment.",o:["write","writes","is writing","wrote"],a:2},
-{q:"We ___ for the bus now.",o:["wait","waits","are waiting","waited"],a:2},
-
-{q:"She usually ___ early.",o:["wake","wakes","woke","waking"],a:1},
-{q:"Water ___ at 100°C.",o:["boil","boils","boiled","boiling"],a:1},
-{q:"The teacher ___ the lesson clearly.",o:["explain","explains","explained","explaining"],a:1},
-{q:"I never ___ late.",o:["come","comes","came","coming"],a:0},
-{q:"He often ___ mistakes.",o:["make","makes","made","making"],a:1},
-
-{q:"Look! It ___ heavily.",o:["rain","rains","is raining","rained"],a:2},
-{q:"She ___ a phone call now.",o:["receive","receives","is receiving","received"],a:2},
-{q:"They ___ football at present.",o:["play","plays","are playing","played"],a:2},
-{q:"I ___ English grammar these days.",o:["learn","learns","am learning","learned"],a:2}
+{q:"Convert $75^\\circ$ into radians.",o:["$5\\pi/12$","$7\\pi/12$","$\\pi/4$","$2\\pi/3$"],a:0},
+{q:"Find the value of $\\sin(150^\\circ)$.",o:["$1/2$","$\\sqrt{3}/2$","$-1/2$","$-\\sqrt{3}/2$"],a:0},
+{q:"In which quadrant is $\\tan \\theta$ positive and $\\sin \\theta$ negative?",o:["I","II","III","IV"],a:2},
+{q:"The value of $\\cos(-60^\\circ)$ is:",o:["$-1/2$","$1/2$","$-\\sqrt{3}/2$","$\\sqrt{3}/2$"],a:1},
+{q:"If $\\sin \\theta = 3/5$ and $\\theta$ is in the II quadrant, find $\\cos \\theta$.",o:["$4/5$","$-4/5$","$3/4$","$-3/4$"],a:1},
+{q:"Convert $2\\pi/3$ radians to degrees.",o:["$120^\\circ$","$150^\\circ$","$135^\\circ$","$100^\\circ$"],a:0},
+{q:"The value of $\\sec^2 \\theta - \\tan^2 \\theta$ is:",o:["0","1","-1","None"],a:1},
+{q:"Find the value of $\\tan(225^\\circ)$.",o:["$1$","$-1$","$\\sqrt{3}$","$1/\\sqrt{3}$"],a:0},
+{q:"What is the maximum value of $\\sin \\theta$?",o:["0","1","$\\infty$","2"],a:1},
+{q:"If $\\tan \\theta = 1$, find the general value of $\\theta$.",o:["$n\\pi + \\pi/4$","$n\\pi - \\pi/4$","$2n\\pi + \\pi/4$","$n\\pi$"],a:0},
+{q:"The period of $\\sin x$ is:",o:["$\\pi$","$2\\pi$","$\\pi/2$","$3\\pi/2$"],a:1},
+{q:"Value of $\\cos(90^\\circ - \\theta)$ is:",o:["$\\cos \\theta$","$\\sin \\theta$","$-\\sin \\theta$","$-\\cos \\theta$"],a:1},
+{q:"The value of $\\sin^2(45^\\circ) + \\cos^2(45^\\circ)$ is:",o:["$1/2$","$1$","$\\sqrt{2}$","$0$"],a:1},
+{q:"Find the value of $\\cot(-45^\\circ)$.",o:["$1$","$-1$","$\\infty$","$0$"],a:1},
+{q:"If $\\cos \\theta = 0$, then $\\theta$ is equal to:",o:["$n\\pi$","$(2n+1)\\pi/2$","$2n\\pi$","None"],a:1},
+{q:"The value of $\\sin 180^\\circ$ is:",o:["$0$","$1$","$-1$","Undefined"],a:0},
+{q:"Value of $\\tan(90^\\circ)$ is:",o:["$0$","$1$","Undefined","$-1$"],a:2},
+{q:"If $\\sin \\theta = \\cos \\theta$, then $\\theta$ in $[0, 90^\\circ]$ is:",o:["$30^\\circ$","$45^\\circ$","$60^\\circ$","$0^\\circ$"],a:1},
+{q:"$\\sin(180^\\circ + \\theta) =$ ?",o:["$\\sin \\theta$","$-\\sin \\theta$","$\\cos \\theta$","$-\\cos \\theta$"],a:1},
+{q:"Find $\\cos 360^\\circ$.",o:["$0$","$1$","$-1$","$\\infty$"],a:1},
+{q:"The ratio $\\frac{\\sin \\theta}{\\cos \\theta}$ is equal to:",o:["$\\cot \\theta$","$\\tan \\theta$","$\\sec \\theta$","$\\csc \\theta$"],a:1},
+{q:"Value of $\\sec(0^\\circ)$ is:",o:["$0$","$1$","Undefined","$-1$"],a:1},
+{q:"Find the value of $\\cos(270^\\circ)$.",o:["$0$","$1$","$-1$","Undefined"],a:0},
+{q:"If $\\csc \\theta = 2$, find $\\sin \\theta$.",o:["$1$","$2$","$1/2$","$\\sqrt{3}/2$"],a:2},
+{q:"Which of the following is correct?",o:["$\\sin 1^\\circ &gt; \\sin 1^c$","$\\sin 1^\\circ &lt; \\sin 1^c$","$\\sin 1^\\circ &#61; \\sin 1^c$","None"],a:1},
+{q:"Range of $\\cos x$ is:",o:["$(0,1)$","$[-1, 1]$","$(-\\infty, \\infty)$","$[-1, 0]$"],a:1},
+{q:"Value of $\\tan(135^\\circ)$ is:",o:["$1$","$-1$","$\\sqrt{3}$","$-1/\\sqrt{3}$"],a:1},
+{q:"If $\\theta = 30^\\circ$, find $2\\sin \\theta \\cos \\theta$.",o:["$1$","$\\sqrt{3}/2$","$1/2$","$0$"],a:1},
+{q:"$\\cos^2 A - \\sin^2 A$ is equivalent to:",o:["$1$","$\\cos 2A$","$\\sin 2A$","$\\tan 2A$"],a:1},
+{q:"Find the radian measure of $360^\\circ$.",o:["$\\pi$","$2\\pi$","$3\\pi$","$4\\pi$"],a:1}
 ];
 
 let index=0,answers=[],viewed=[],submitted=false;
@@ -149,6 +156,8 @@ quizHeader.style.display="block";
 bottomBar.style.display="flex";
 wm1.innerText=mobile;
 wm2.innerText=mobile;
+wm3.innerText=mobile;
+wm4.innerText=mobile;
 loadQuestion();
 startTimer();
 }
@@ -168,21 +177,30 @@ function loadQuestion(){
 viewed[index]=true;
 let q=questions[index];
 container.innerHTML=`
-<h4>Mobile: ${mobile}</h4>
+<div style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:5px"><b>User:</b> ${mobile}</div>
 <h3>Q${index+1}. ${q.q}</h3>
+<div id="optionsGroup">
 ${q.o.map((opt,i)=>`
 <label class="option
 ${submitted&&i===q.a?'correct':''}
 ${submitted&&answers[index]===i&&i!==q.a?'wrong':''}">
-<input type="radio" name="opt"
+<input type="radio" name="opt" style="margin-right:10px"
 ${submitted?"disabled":""}
 ${answers[index]===i?"checked":""}
-onclick="answers[${index}]=${i};updateNav()">
+onclick="selectOption(${i})">
 ${opt}
 </label>`).join("")}
+</div>
 `;
 submit.style.display=(index===questions.length-1&&!submitted)?"block":"none";
 updateNav();
+if(window.MathJax) MathJax.typeset();
+}
+
+function selectOption(i){
+    if(submitted) return;
+    answers[index]=i;
+    updateNav();
 }
 
 function updateNav(){
@@ -202,30 +220,21 @@ submit.onclick=submitQuiz;
 
 function submitQuiz(){
 if(submitted)return;
+if(!confirm("Are you sure you want to submit?")) return;
 submitted=true;
 clearInterval(timerInterval);
-
 let score=0;
 questions.forEach((q,i)=>{if(answers[i]===q.a)score++;});
-
 resultContainer.innerHTML=`
 <div id="resultBox">
-<h3>Result</h3>
+<h3>Result Summary</h3>
 <p><b>Mobile Number :</b> ${mobile}</p>
-<p><b>Marks :</b> ${score} / ${questions.length}</p>
+<p><b>Score :</b> ${score} / ${questions.length}</p>
+<p>Scroll up to review your answers. Green indicates correct, red indicates your wrong choice.</p>
 </div>
 `;
-
-sendToGoogleForm(score);
 loadQuestion();
-}
-
-function sendToGoogleForm(score){
-let url="https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse";
-let data=new FormData();
-data.append("entry.MOBILE_ENTRY_ID",mobile);
-data.append("entry.MARKS_ENTRY_ID",score);
-fetch(url,{method:"POST",mode:"no-cors",body:data});
+window.scrollTo(0,0);
 }
 </script>
 
