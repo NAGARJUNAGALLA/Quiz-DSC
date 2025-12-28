@@ -1,241 +1,261 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Class XI Trigonometric Ratios Quiz</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coal and Petroleum - Immersive Quiz</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            margin: 0;
+        }
 
-<script>
-window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};
-</script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        .container {
+            border: 2px solid #00e5ff;
+            padding: 10px;
+            background-color: #0a0a0a;
+            width: 100%;
+            max-width: 1000px;
+            box-sizing: border-box;
+            min-height: 400px;
+        }
 
-<style>
-body{margin:0;font-family:Arial;background:#f4f6fa}
-header{
-position:fixed;top:0;left:0;right:0;
-background:#1e88e5;color:#fff;
-padding:10px;text-align:center;
-z-index:10
-}
-#timerText{float:left}
-#toggleNav{float:right;background:#fff;color:#1e88e5;border:none;padding:5px 10px;border-radius:6px}
+        .header {
+            background-color: #fff9c4;
+            color: #333;
+            text-align: center;
+            font-size: clamp(18px, 5vw, 28px);
+            font-weight: bold;
+            padding: 10px;
+            margin: 0 auto 20px auto;
+            clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%);
+            width: 80%;
+        }
 
-#container{padding:70px 10px 20px}
-#resultContainer{padding:10px 10px 160px}
+        .section-title {
+            background-color: #1a1a1a;
+            color: #fff9c4;
+            text-align: center;
+            font-weight: bold;
+            padding: 8px;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 2px;
+            border: 1px solid #00e5ff;
+            margin-top: 10px;
+        }
 
-.option{
-display:block;padding:12px;border:1px solid #ccc;
-border-radius:8px;margin:8px 0;background:#fff;
-cursor:pointer; transition: 0.2s;
-}
-.option:hover{background:#f0f7ff}
-.correct{background:#c8f7c5 !important;border-color:green !important}
-.wrong{background:#f7c5c5 !important;border-color:red !important}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
 
-.bottom-bar{
-position:fixed;bottom:0;left:0;right:0;
-display:flex;justify-content:space-between;
-padding:10px;background:#fff;border-top:1px solid #ccc;z-index:5;
-}
-button{padding:10px 15px;border:none;border-radius:6px;cursor:pointer}
-#prev{background:#ccc}
-#next{background:#1e88e5;color:#fff}
-#submit{background:green;color:#fff;display:none}
+        td {
+            border: 1px solid #00e5ff;
+            padding: 15px;
+            vertical-align: top;
+        }
 
-#navPanel{
-position:fixed;top:60px;right:-250px;width:220px;
-background:#fff;border-left:2px solid #1e88e5;
-height:calc(100% - 60px);padding:10px;transition:0.3s;
-overflow-y:auto;z-index:9;
-}
-.nav-btn{
-width:40px;height:40px;margin:5px;border:none;border-radius:50%;cursor:pointer
-}
-.attempted{background:green;color:#fff}
-.viewed{background:red;color:#fff}
+        /* Visibility Controls */
+        #study-content { display: block; }
+        #quiz-wrapper { display: none; }
 
-.watermark{
-position:fixed;opacity:0.1;font-size:24px;
-transform:rotate(-30deg);color:#000;
-pointer-events:none;white-space:nowrap;z-index:0;
-}
+        #timer-box {
+            text-align: center;
+            font-size: 1.5em;
+            color: #ff5252;
+            font-weight: bold;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ff5252;
+        }
 
-#loginBox{text-align:center;padding:40px}
-#errorMsg{color:red;margin-top:10px;font-size:14px;display:none}
+        .quiz-card {
+            padding: 15px;
+            border-bottom: 1px solid #333;
+        }
 
-#resultBox{
-background:#fff;border-radius:10px;
-border:2px solid #1e88e5;padding:15px
-}
-</style>
+        .question {
+            color: #00e5ff;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media screen and (max-width: 600px) {
+            .options { grid-template-columns: 1fr; }
+            tr { display: flex; flex-direction: column; }
+            td { width: auto !important; display: block; }
+        }
+
+        label {
+            background: #1a1a1a;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        label:hover { border-color: #00e5ff; }
+
+        input[type="radio"] { margin-right: 12px; accent-color: #00e5ff; }
+
+        .correct-ans { background-color: #1b5e20 !important; border-color: #4caf50 !important; }
+        .wrong-ans { background-color: #b71c1c !important; border-color: #f44336 !important; }
+
+        .btn-action {
+            background-color: #00e5ff;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            text-transform: uppercase;
+        }
+
+        #score-display {
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 15px;
+            color: #fff9c4;
+            display: none;
+        }
+    </style>
 </head>
-
 <body>
 
-<div id="loginBox">
-<h2>Enter Mobile Number</h2>
-<input id="mobileInput" type="tel" placeholder="Mobile Number"><br><br>
-<button onclick="login()" style="background:#1e88e5;color:#fff;padding:10px 30px">Start Quiz</button>
-<div id="errorMsg">Invalid mobile number</div>
+<div class="container">
+    <div class="header">Coal & Petroleum Portal</div>
+
+    <div id="study-content">
+        <div class="section-title">Key Study Points</div>
+        [attachment_0](attachment)
+        <table>
+            <tr>
+                <td><strong>Carbonisation:</strong> Slow conversion of dead vegetation into coal under high pressure/temp.</td>
+                <td><strong>Coke:</strong> Tough, porous black substance; pure carbon used in steel.</td>
+                <td><strong>Coal Tar:</strong> Thick black liquid used for dyes and drugs.</td>
+            </tr>
+            <tr>
+                <td><strong>Petroleum:</strong> Formed from sea organisms; refined into various fuels.</td>
+                <td><strong>Refining:</strong> Separating petroleum constituents in a refinery.</td>
+                <td><strong>Natural Gas:</strong> Clean fuel stored as CNG under high pressure.</td>
+            </tr>
+        </table>
+        <button class="btn-action" onclick="startQuiz()">Take the Quiz (3 Mins)</button>
+    </div>
+    <div id="quiz-wrapper">
+        <div id="timer-box">Time Remaining: <span id="time-display">03:00</span></div>
+        <div class="section-title">Final Assessment</div>
+        
+        <div class="quiz-card">
+            <p class="question">1. Which of these is an inexhaustible natural resource?</p>
+            <div class="options">
+                <label><input type="radio" name="q1" value="wrong"> Coal</label>
+                <label><input type="radio" name="q1" value="wrong"> Petroleum</label>
+                <label><input type="radio" name="q1" value="correct"> Sunlight</label>
+                <label><input type="radio" name="q1" value="wrong"> Natural Gas</label>
+            </div>
+        </div>
+
+        <div class="quiz-card">
+            <p class="question">2. Purest form of carbon among the following is:</p>
+            <div class="options">
+                <label><input type="radio" name="q2" value="wrong"> Coal Gas</label>
+                <label><input type="radio" name="q2" value="correct"> Coke</label>
+                <label><input type="radio" name="q2" value="wrong"> Coal Tar</label>
+                <label><input type="radio" name="q2" value="wrong"> Anthracite</label>
+            </div>
+        </div>
+
+        <div class="quiz-card">
+            <p class="question">3. PCRA stands for:</p>
+            <div class="options">
+                <label><input type="radio" name="q3" value="correct"> Petroleum Conservation Research Association</label>
+                <label><input type="radio" name="q3" value="wrong"> Petro-Chemical Research Agency</label>
+                <label><input type="radio" name="q3" value="wrong"> Public Coal Resource Association</label>
+                <label><input type="radio" name="q3" value="wrong"> Petroleum Control Resource Agency</label>
+            </div>
+        </div>
+
+        <div id="score-display"></div>
+        <button class="btn-action" id="submit-btn" onclick="submitQuiz()">Submit Answers</button>
+        <button class="btn-action" id="back-btn" style="display:none; background-color:#fff9c4;" onclick="location.reload()">Back to Notes</button>
+    </div>
 </div>
 
-<header id="quizHeader" style="display:none">
-<span id="timerText"></span>
-Trigonometry (Class XI)
-<button id="toggleNav">☰</button>
-</header>
-
-<div id="container"></div>
-<div id="resultContainer"></div>
-
-<div class="bottom-bar" id="bottomBar" style="display:none">
-<button id="prev">Prev</button>
-<button id="next">Next</button>
-<button id="submit">Submit</button>
-</div>
-
-<div id="navPanel"></div>
-
-<div class="watermark" style="top:30%;left:10%" id="wm1"></div>
-<div class="watermark" style="top:70%;left:40%" id="wm2"></div>
-<div class="watermark" style="top:50%;left:20%" id="wm3"></div>
-<div class="watermark" style="top:40%;left:30%" id="wm4"></div>
 <script>
-// NOTE: Ensure your mobile number is in this list
-const allowedMobiles=["9876543521","12345678654"];
-let mobile="";
+    let secondsLeft = 180; // 3 questions * 60 seconds
+    let timerInterval;
 
-// Use HTML Entities for Special Symbols: < is &lt;, > is &gt;, = is &#61;
-const questions=[
-{q:"Convert $75^\\circ$ into radians.",o:["$5\\pi/12$","$7\\pi/12$","$\\pi/4$","$2\\pi/3$"],a:0},
-{q:"Find the value of $\\sin(150^\\circ)$.",o:["$1/2$","$\\sqrt{3}/2$","$-1/2$","$-\\sqrt{3}/2$"],a:0},
-{q:"In which quadrant is $\\tan \\theta$ positive and $\\sin \\theta$ negative?",o:["I","II","III","IV"],a:2},
-{q:"The value of $\\cos(-60^\\circ)$ is:",o:["$-1/2$","$1/2$","$-\\sqrt{3}/2$","$\\sqrt{3}/2$"],a:1},
-{q:"If $\\sin \\theta = 3/5$ and $\\theta$ is in the II quadrant, find $\\cos \\theta$.",o:["$4/5$","$-4/5$","$3/4$","$-3/4$"],a:1},
-{q:"Convert $2\\pi/3$ radians to degrees.",o:["$120^\\circ$","$150^\\circ$","$135^\\circ$","$100^\\circ$"],a:0},
-{q:"The value of $\\sec^2 \\theta - \\tan^2 \\theta$ is:",o:["0","1","-1","None"],a:1},
-{q:"Find the value of $\\tan(225^\\circ)$.",o:["$1$","$-1$","$\\sqrt{3}$","$1/\\sqrt{3}$"],a:0},
-{q:"What is the maximum value of $\\sin \\theta$?",o:["0","1","$\\infty$","2"],a:1},
-{q:"If $\\tan \\theta = 1$, find the general value of $\\theta$.",o:["$n\\pi + \\pi/4$","$n\\pi - \\pi/4$","$2n\\pi + \\pi/4$","$n\\pi$"],a:0},
-{q:"The period of $\\sin x$ is:",o:["$\\pi$","$2\\pi$","$\\pi/2$","$3\\pi/2$"],a:1},
-{q:"Value of $\\cos(90^\\circ - \\theta)$ is:",o:["$\\cos \\theta$","$\\sin \\theta$","$-\\sin \\theta$","$-\\cos \\theta$"],a:1},
-{q:"The value of $\\sin^2(45^\\circ) + \\cos^2(45^\\circ)$ is:",o:["$1/2$","$1$","$\\sqrt{2}$","$0$"],a:1},
-{q:"Find the value of $\\cot(-45^\\circ)$.",o:["$1$","$-1$","$\\infty$","$0$"],a:1},
-{q:"If $\\cos \\theta = 0$, then $\\theta$ is equal to:",o:["$n\\pi$","$(2n+1)\\pi/2$","$2n\\pi$","None"],a:1},
-{q:"The value of $\\sin 180^\\circ$ is:",o:["$0$","$1$","$-1$","Undefined"],a:0},
-{q:"Value of $\\tan(90^\\circ)$ is:",o:["$0$","$1$","Undefined","$-1$"],a:2},
-{q:"If $\\sin \\theta = \\cos \\theta$, then $\\theta$ in $[0, 90^\\circ]$ is:",o:["$30^\\circ$","$45^\\circ$","$60^\\circ$","$0^\\circ$"],a:1},
-{q:"$\\sin(180^\\circ + \\theta) =$ ?",o:["$\\sin \\theta$","$-\\sin \\theta$","$\\cos \\theta$","$-\\cos \\theta$"],a:1},
-{q:"Find $\\cos 360^\\circ$.",o:["$0$","$1$","$-1$","$\\infty$"],a:1},
-{q:"The ratio $\\frac{\\sin \\theta}{\\cos \\theta}$ is equal to:",o:["$\\cot \\theta$","$\\tan \\theta$","$\\sec \\theta$","$\\csc \\theta$"],a:1},
-{q:"Value of $\\sec(0^\\circ)$ is:",o:["$0$","$1$","Undefined","$-1$"],a:1},
-{q:"Find the value of $\\cos(270^\\circ)$.",o:["$0$","$1$","$-1$","Undefined"],a:0},
-{q:"If $\\csc \\theta = 2$, find $\\sin \\theta$.",o:["$1$","$2$","$1/2$","$\\sqrt{3}/2$"],a:2},
-{q:"Which of the following is correct?",o:["$\\sin 1^\\circ &gt; \\sin 1^c$","$\\sin 1^\\circ &lt; \\sin 1^c$","$\\sin 1^\\circ &#61; \\sin 1^c$","None"],a:1},
-{q:"Range of $\\cos x$ is:",o:["$(0,1)$","$[-1, 1]$","$(-\\infty, \\infty)$","$[-1, 0]$"],a:1},
-{q:"Value of $\\tan(135^\\circ)$ is:",o:["$1$","$-1$","$\\sqrt{3}$","$-1/\\sqrt{3}$"],a:1},
-{q:"If $\\theta = 30^\\circ$, find $2\\sin \\theta \\cos \\theta$.",o:["$1$","$\\sqrt{3}/2$","$1/2$","$0$"],a:1},
-{q:"$\\cos^2 A - \\sin^2 A$ is equivalent to:",o:["$1$","$\\cos 2A$","$\\sin 2A$","$\\tan 2A$"],a:1},
-{q:"Find the radian measure of $360^\\circ$.",o:["$\\pi$","$2\\pi$","$3\\pi$","$4\\pi$"],a:1}
-];
+    function startQuiz() {
+        // Hide study material
+        document.getElementById('study-content').style.display = 'none';
+        // Show quiz
+        document.getElementById('quiz-wrapper').style.display = 'block';
+        
+        startTimer();
+    }
 
-let index=0,answers=[],viewed=[],submitted=false;
-let timeLeft=questions.length*60;
-let timerInterval;
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            secondsLeft--;
+            
+            let mins = Math.floor(secondsLeft / 60);
+            let secs = secondsLeft % 60;
+            document.getElementById('time-display').innerText = 
+                (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
 
-function login(){
-mobile=mobileInput.value.trim();
-if(!allowedMobiles.includes(mobile)){
-errorMsg.style.display="block";
-return;
-}
-errorMsg.style.display="none";
-loginBox.style.display="none";
-quizHeader.style.display="block";
-bottomBar.style.display="flex";
-wm1.innerText=mobile;
-wm2.innerText=mobile;
-wm3.innerText=mobile;
-wm4.innerText=mobile;
-loadQuestion();
-startTimer();
-}
+            if (secondsLeft <= 0) {
+                clearInterval(timerInterval);
+                alert("Time is up! Quiz will be submitted.");
+                submitQuiz();
+            }
+        }, 1000);
+    }
 
-function startTimer(){
-timerInterval=setInterval(updateTimer,1000);
-}
+    function submitQuiz() {
+        clearInterval(timerInterval);
+        document.getElementById('timer-box').style.display = 'none';
+        
+        let score = 0;
+        const total = 3;
+        
+        const allInputs = document.querySelectorAll('input[type="radio"]');
+        allInputs.forEach(input => {
+            const parentLabel = input.parentElement;
+            if (input.value === "correct") {
+                parentLabel.classList.add('correct-ans');
+                if (input.checked) score++;
+            } else if (input.checked && input.value === "wrong") {
+                parentLabel.classList.add('wrong-ans');
+            }
+            input.disabled = true; // Prevent changing answers after submit
+        });
 
-function updateTimer(){
-let m=Math.floor(timeLeft/60);
-let s=timeLeft%60;
-timerText.innerText=`Time: ${m}:${s<10?'0'+s:s}`;
-if(timeLeft--<=0 && !submitted)submitQuiz();
-}
-
-function loadQuestion(){
-viewed[index]=true;
-let q=questions[index];
-container.innerHTML=`
-<div style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:5px"><b>User:</b> ${mobile}</div>
-<h3>Q${index+1}. ${q.q}</h3>
-<div id="optionsGroup">
-${q.o.map((opt,i)=>`
-<label class="option
-${submitted&&i===q.a?'correct':''}
-${submitted&&answers[index]===i&&i!==q.a?'wrong':''}">
-<input type="radio" name="opt" style="margin-right:10px"
-${submitted?"disabled":""}
-${answers[index]===i?"checked":""}
-onclick="selectOption(${i})">
-${opt}
-</label>`).join("")}
-</div>
-`;
-submit.style.display=(index===questions.length-1&&!submitted)?"block":"none";
-updateNav();
-if(window.MathJax) MathJax.typeset();
-}
-
-function selectOption(i){
-    if(submitted) return;
-    answers[index]=i;
-    updateNav();
-}
-
-function updateNav(){
-navPanel.innerHTML="";
-questions.forEach((_,i)=>{
-let cls="";
-if(answers[i]!=null)cls="attempted";
-else if(viewed[i])cls="viewed";
-navPanel.innerHTML+=`<button class="nav-btn ${cls}" onclick="index=${i};loadQuestion()">${i+1}</button>`;
-});
-}
-
-toggleNav.onclick=()=>navPanel.style.right=navPanel.style.right=="0px"?"-250px":"0px";
-prev.onclick=()=>{if(index>0){index--;loadQuestion();}};
-next.onclick=()=>{if(index<questions.length-1){index++;loadQuestion();}};
-submit.onclick=submitQuiz;
-
-function submitQuiz(){
-if(submitted)return;
-if(!confirm("Are you sure you want to submit?")) return;
-submitted=true;
-clearInterval(timerInterval);
-let score=0;
-questions.forEach((q,i)=>{if(answers[i]===q.a)score++;});
-resultContainer.innerHTML=`
-<div id="resultBox">
-<h3>Result Summary</h3>
-<p><b>Mobile Number :</b> ${mobile}</p>
-<p><b>Score :</b> ${score} / ${questions.length}</p>
-<p>Scroll up to review your answers. Green indicates correct, red indicates your wrong choice.</p>
-</div>
-`;
-loadQuestion();
-window.scrollTo(0,0);
-}
+        const scoreDiv = document.getElementById('score-display');
+        scoreDiv.style.display = 'block';
+        scoreDiv.innerHTML = "Assessment Complete! Your Score: " + score + " / " + total;
+        
+        document.getElementById('submit-btn').style.display = 'none';
+        document.getElementById('back-btn').style.display = 'block';
+    }
 </script>
 
 </body>
